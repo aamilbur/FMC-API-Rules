@@ -9,7 +9,7 @@ fmc_ip = input("Enter your FMC IP address: ")
 
 # set up variables
 url = f"https://{fmc_ip}"
-
+querystring = {"limit":"1000"}
 
 def get_token(url, user, password):
     headers = {'Content-Type': 'application/json'}
@@ -46,7 +46,7 @@ def get_objects(fmc_obj, url, headers, domainUUID):
 
     try:
         object_response = requests.get(
-            f"{url}{specific_path}", headers=headers, verify=False)
+            f"{url}{specific_path}", headers=headers, verify=False, params=querystring)
         object_response.raise_for_status()
         results = object_response.json()
 
@@ -102,7 +102,7 @@ def copy_to_url(headers, obj_list, domainUUID):
     for item in obj_list:
         #print(item['id'])
         list_value = get_specific_fqdn_object(headers=headers, id=item['id'], domainUUID=domainUUID)
-        #print(list_value[0])
+        print(list_value[0])
         payload = json.dumps(
             {
                 "type": "Url",
@@ -139,3 +139,5 @@ for x in domains:
             #delete_objects(headers=headers, obj_list=objects)
         #call function to copy FQDN objects to URL objects
         copy_to_url(headers=headers, obj_list=objects, domainUUID=domainUUID)
+
+print(f"Copy complete.  Closing out.")
