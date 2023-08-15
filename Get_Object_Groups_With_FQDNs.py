@@ -92,4 +92,7 @@ domains = get_domains(url=url, headers=headers)
 for x in domains:
     domainUUID = x
     objects = get_object_groups(url=url, headers=headers, domainUUID=domainUUID)
-    print(objects)
+    for item in objects["items"]:
+        #obj_list.append(item['uuid'])
+
+        print(item)
