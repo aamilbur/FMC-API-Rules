@@ -41,12 +41,12 @@ def get_token(url, user, password):
 def get_objects(fmc_obj, url, headers, domainUUID):
     # get fqdn objects
 
-    specific_path = f"/api/fmc_config/v1/domain/{domainUUID}/object/{fmc_obj}"
+    specific_path = f"/api/fmc_config/v1/domain/{domainUUID}/object/{fmc_obj}?limit=1000"
     obj_list = []
 
     try:
         object_response = requests.get(
-            f"{url}{specific_path}", headers=headers, verify=False, params=querystring)
+            f"{url}{specific_path}", headers=headers, verify=False)
         object_response.raise_for_status()
         results = object_response.json()
 
@@ -130,9 +130,12 @@ headers = get_token(url, user, password)
 #get all domains
 domains = get_domains(url=url, headers=headers)
 
+total_URLS = 0
+
 for x in domains:
     domainUUID = x
     objects = get_objects(fmc_obj=fmc_obj, url=url, headers=headers, domainUUID=domainUUID)
+    print("List size: " + str(len(objects)))
 
     if objects:
             #call function to delete unused objects
@@ -140,4 +143,4 @@ for x in domains:
         #call function to copy FQDN objects to URL objects
         copy_to_url(headers=headers, obj_list=objects, domainUUID=domainUUID)
 
-print(f"Copy complete.  Closing out.")
+print(f"Copy complete.  Copied {total_URLS} in all.  Closing out.")
